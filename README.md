@@ -1,9 +1,13 @@
 # Skillfinder
 
-`Skillfinder` is a social media app designed for students and teachers. It was
+## Description
+
+Skillfinder is a social media application designed for students and teachers. It was
 created with React, Node/Express and PostgreSQL as a part of the university
 coursework. Credits to [George](https://github.com/UP933287) for helping me out
 with this project.
+
+Preview (it might take a few seconds before the server wakes up): https://skillfinder.kamilmuzyka.com
 
 ### Prerequisites
 
@@ -21,42 +25,34 @@ with this project.
     npm install
     ```
 
-2. Create a database for the project:
-
-    ```
-    psql
-    CREATE DATABASE skillfinder;
-    \q
-    ```
-
-3. Create a .env file in the project root directory and put the following code
+2. Create a .env file in the project root directory and put the following code
    inside of it:
     ```
     DATABASE_URL=postgres://<DATABASE_USERNAME>:<DATABASE_PASSWORD>@localhost:5432/skillfinder
     JWT_SECRET=<ANY_STRING>
     ```
 
-    - Replace the <...> fragments with your local settings.
+    -   Replace the <...> fragments with your local settings.
 
-    - If you use Postgres for MacOS (Postgres.app), then you can skip setting the password.
+    -   If you use Postgres for MacOS (Postgres.app), then you can skip setting the password.
 
-    - If you use Postgres for Windows, then the default password should be set to "root".
+    -   If you use Postgres for Windows, then the default password should be set to "root".
 
-    - If you named your database different than "skillfinder", change the last bit of the connection URL as well.
+    -   If you named your database different than "skillfinder", change the last bit of the connection URL as well.
 
-4. Build the project:
+3. Run the setup script:
 
     ```
-    npm run build
+    npm run setup
     ```
 
-5. Start the application:
+4. Start the application:
 
     ```
     npm start
     ```
 
-    - You can now access the app at http://localhost:8080.
+    -   You can now access the app at http://localhost:8080.
 
 ## Available Scripts
 
@@ -91,6 +87,12 @@ with this project.
     ```
 
     -   It will compile the development version of the client code into a production version. The output code will appear at the ./client/build directory. The production version of the application will be served at http://localhost:8080.
+
+-   Create a database for the project and run the initial build:
+
+    ```
+    npm run setup
+    ```
 
 ## Directory Structure
 
