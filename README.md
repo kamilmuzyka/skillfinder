@@ -1,12 +1,17 @@
 # Skillfinder
 
+`Skillfinder` is a social media app designed for students and teachers. It was
+created with React, Node/Express and PostgreSQL as a part of the university
+coursework. Credits to [George](https://github.com/UP933287) for helping me out
+with this project.
+
 ### Prerequisites
 
--   Node.js ([Download](https://nodejs.org/en/))
+-   Node.js 16.3.0 ([Download](https://nodejs.org/en/))
 
--   npm ([Docs](https://www.npmjs.com/get-npm))
+-   npm 7.15.1 ([Documentation](https://www.npmjs.com/get-npm))
 
--   PostgreSQL ([Download/Windows](https://www.postgresql.org/download/) | [Download/MacOS](https://postgresapp.com/))
+-   PostgreSQL 13.3 ([Download/Windows](https://www.postgresql.org/download/) | [Download/MacOS](https://postgresapp.com/))
 
 ### Installation
 
@@ -16,9 +21,7 @@
     npm install
     ```
 
-2. Run your local PostgreSQL server.
-
-3. Create a database for the project:
+2. Create a database for the project:
 
     ```
     psql
@@ -26,21 +29,14 @@
     \q
     ```
 
-4. Create a .env file in the project root directory:
-
-    - The name must be exact.
-
-    - This file will hold environment variables that might be different for each of us.
-
-    - This file will not (and should not) be pushed into GitHub.
-
-5. Put database URI in the `.env` file:
-
+3. Create a .env file in the project root directory and put the following code
+   inside of it:
     ```
     DATABASE_URL=postgres://<DATABASE_USERNAME>:<DATABASE_PASSWORD>@localhost:5432/skillfinder
+    JWT_SECRET=<ANY_STRING>
     ```
 
-    - Replace the `DATABASE_URL` with the one your database uses.
+    - Replace the <...> fragments with your local settings.
 
     - If you use Postgres for MacOS (Postgres.app), then you can skip setting the password.
 
@@ -48,21 +44,13 @@
 
     - If you named your database different than "skillfinder", change the last bit of the connection URL as well.
 
-6. Put JWT secret in the .env file:
-
-    ```
-    JWT_SECRET=<ANY_STRING>
-    ```
-
-    - Replace `ANY_STRING` with any secret string.
-
-7. Build the project:
+4. Build the project:
 
     ```
     npm run build
     ```
 
-8. Start the application:
+5. Start the application:
 
     ```
     npm start
