@@ -35,7 +35,7 @@
         "createDatabase": "createdb skillfinder",
         "build": "npm run build --prefix client",
         "setup": "npm run createDatabase & npm run build",
-        "server": "nodemon server.js",
+        "server": "node server.js",
         "client": "npm start --prefix client",
         "dev": "concurrently \"npm run server\" \"npm run client\"",
         "start": "npm run server"
