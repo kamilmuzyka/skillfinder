@@ -4,7 +4,12 @@ import path from 'path';
 import User from '../models/User.js';
 import File from '../models/File.js';
 import { uploadImage, uploadFile } from '../data-access/storage.js';
-import { uploadS3File } from '../data-access/s3.js';
+import {
+    uploadS3File,
+    getS3FileReadStream,
+    deleteS3File,
+} from '../data-access/s3.js';
+import unlinkFile from '../utils/unlinkFile.js';
 
 /** Post photo - updates (or adds new) currently logged in user's photo. It is meant to operate on protected routes only.
  *  @param {string} photoType - requires photoType URL parameter equal to 'profilePhoto' or 'backgroundImage'.
@@ -28,18 +33,21 @@ export const postPhoto = async (req, res) => {
             });
             const oldPhoto = user[photoType];
 
-            /** Delete old photo if exists */
+            /** Delete the old photo (if exists) from the S3 bucket. */
             if (oldPhoto) {
-                fs.unlink(oldPhoto, () => {});
+                const fileKey = oldPhoto.replace('/photos/', '');
+                await deleteS3File(fileKey);
             }
 
-            /** Upload a new photo */
+            /** Upload a new photo to the S3 bucket. */
             const newUpload = await uploadS3File(req.file);
-            console.log(newUpload);
 
-            /** Update database */
+            /** Remove photo from the local file system. */
+            await unlinkFile(req.file.path);
+
+            /** Update the database. */
             await user.update({
-                [photoType]: `/${req.file.path}`,
+                [photoType]: `/photos/${newUpload.key}`,
             });
             res.sendStatus(200);
         } catch (err) {
@@ -59,12 +67,12 @@ export const removePhoto = async (req, res) => {
     });
     const photo = user[photoType];
     if (photo) {
-        fs.unlink(photo, async () => {
-            user.update({
-                [photoType]: null,
-            });
-            res.sendStatus(200);
+        const fileKey = photo.replace('/photos/', '');
+        await deleteS3File(fileKey);
+        await user.update({
+            [photoType]: null,
         });
+        res.sendStatus(200);
         return;
     }
     res.status(400).json({
@@ -78,17 +86,9 @@ export const removePhoto = async (req, res) => {
  */
 export const getPhoto = async (req, res) => {
     try {
-        const { userId, photoName } = req.params;
-        res.sendFile(
-            path.join(
-                process.env.PWD,
-                'data-access',
-                'uploads',
-                'users',
-                userId,
-                photoName
-            )
-        );
+        const { photoKey } = req.params;
+        const readStream = await getS3FileReadStream(photoKey);
+        readStream.pipe(res);
     } catch (err) {
         res.status(400).json({
             error: 'Could not find photo as it does not exist.',

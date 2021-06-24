@@ -19,7 +19,7 @@ router.get(
 );
 // router.get('/files/:fileKey', auth, getFile);
 router.get('/file/all/:chatId', auth, getFiles);
-router.get('/data-access/uploads/users/:userId/:photoName', getPhoto);
-// router.get('/photos/:photoKey', getPhoto);
+// router.get('/data-access/uploads/users/:userId/:photoName', getPhoto);
+router.get('/photos/:photoKey', getPhoto);
 
 export default router;

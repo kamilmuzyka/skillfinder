@@ -1,6 +1,6 @@
 /** @module FileStorage */
 import path from 'path';
-import fs from 'fs';
+// import fs from 'fs';
 import multer from 'multer';
 import { v4 } from 'uuid';
 
@@ -9,29 +9,31 @@ import { v4 } from 'uuid';
  * @param {string} chatId - can be undefined, defaults to photos directory.
  * @param {function} callback - a callback function that is executed after creating the directory.
  */
-const createUploadDirectory = async (userId, chatId, callback) => {
-    let userDir;
-    if (!chatId) {
-        userDir = path.join('.', 'data-access', 'uploads', 'users', userId);
-    } else {
-        userDir = path.join(
-            '.',
-            'data-access',
-            'uploads',
-            'chats',
-            chatId,
-            userId
-        );
-    }
-    fs.stat(userDir, async (error) => {
-        if (error) {
-            fs.mkdirSync(userDir, { recursive: true });
-            callback(userDir);
-            return;
-        }
-        callback(userDir);
-    });
-};
+// const createUploadDirectory = async (userId, chatId, callback) => {
+//     let userDir;
+//     if (!chatId) {
+//         userDir = path.join('.', 'data-access', 'uploads', 'users', userId);
+//     } else {
+//         userDir = path.join(
+//             '.',
+//             'data-access',
+//             'uploads',
+//             'chats',
+//             chatId,
+//             userId
+//         );
+//     }
+//     fs.stat(userDir, async (error) => {
+//         if (error) {
+//             fs.mkdirSync(userDir, { recursive: true });
+//             callback(userDir);
+//             return;
+//         }
+//         callback(userDir);
+//     });
+// };
+
+const destination = path.join('.', 'data-access', 'uploads');
 
 /** Creates a multer storage specifically for images.
  * @param {object} req - content-type must be of: 'multipart/form-data'.
@@ -40,9 +42,7 @@ const createUploadDirectory = async (userId, chatId, callback) => {
  */
 const storage = multer.diskStorage({
     destination(req, file, cb) {
-        createUploadDirectory(req.userId, req.body.chatId, (userDir) => {
-            cb(null, userDir);
-        });
+        cb(null, destination);
     },
     filename(req, file, cb) {
         cb(null, `${v4() + path.extname(file.originalname)}`);
@@ -56,9 +56,7 @@ const storage = multer.diskStorage({
  */
 const fileStorage = multer.diskStorage({
     destination(req, file, cb) {
-        createUploadDirectory(req.userId, req.body.chatId, (userDir) => {
-            cb(null, userDir);
-        });
+        cb(null, destination);
     },
     filename(req, file, cb) {
         cb(null, `${file.originalname}`);

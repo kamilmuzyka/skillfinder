@@ -33,7 +33,7 @@ export const deleteS3File = async (fileKey) => {
             Key: fileKey,
             Bucket: process.env.AWS_BUCKET_NAME,
         };
-        return s3.deleteObject(deleteParams);
+        return s3.deleteObject(deleteParams).promise();
     } catch (error) {
         throw Error('Failed to delete the file.');
     }
