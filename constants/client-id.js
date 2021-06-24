@@ -1,7 +1,7 @@
 /** @constant CLIENT_ID */
-/** Used to authenticate users with Google client.
- */
+/** Used to authenticate users with Google OAuth client. This ID is public and
+doesn't need to be hidden, unlike the secret key. */
 const CLIENT_ID =
-    '376637890849-b65grja0cmn3me29vvj7k4565k3jjoi7.apps.googleusercontent.com';
+    '672058375787-ig8vvppsens2vtlqvirok014g6aurkja.apps.googleusercontent.com';
 
 export default CLIENT_ID;

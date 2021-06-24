@@ -7,7 +7,7 @@ const GoogleButton = ({ children }) => {
 
     return (
         <GoogleLogin
-            clientId="376637890849-b65grja0cmn3me29vvj7k4565k3jjoi7.apps.googleusercontent.com"
+            clientId="672058375787-ig8vvppsens2vtlqvirok014g6aurkja.apps.googleusercontent.com"
             onSuccess={onSuccess}
             render={({ onClick, disabled }) => (
                 <Button onClick={onClick} disabled={disabled} outlined>
