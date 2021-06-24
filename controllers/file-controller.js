@@ -4,6 +4,7 @@ import path from 'path';
 import User from '../models/User.js';
 import File from '../models/File.js';
 import { uploadImage, uploadFile } from '../data-access/storage.js';
+import { uploadS3File } from '../data-access/s3.js';
 
 /** Post photo - updates (or adds new) currently logged in user's photo. It is meant to operate on protected routes only.
  *  @param {string} photoType - requires photoType URL parameter equal to 'profilePhoto' or 'backgroundImage'.
@@ -26,9 +27,17 @@ export const postPhoto = async (req, res) => {
                 where: { id: userId },
             });
             const oldPhoto = user[photoType];
+
+            /** Delete old photo if exists */
             if (oldPhoto) {
                 fs.unlink(oldPhoto, () => {});
             }
+
+            /** Upload a new photo */
+            const newUpload = await uploadS3File(req.file);
+            console.log(newUpload);
+
+            /** Update database */
             await user.update({
                 [photoType]: `/${req.file.path}`,
             });
