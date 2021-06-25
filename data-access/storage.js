@@ -1,39 +1,17 @@
 /** @module FileStorage */
 import path from 'path';
-// import fs from 'fs';
+import fs from 'fs';
 import multer from 'multer';
 import { v4 } from 'uuid';
 
-/** Creates a user upload directory if it doesn't exist.
- * @param {string} userId - the user the directory is for.
- * @param {string} chatId - can be undefined, defaults to photos directory.
- * @param {function} callback - a callback function that is executed after creating the directory.
- */
-// const createUploadDirectory = async (userId, chatId, callback) => {
-//     let userDir;
-//     if (!chatId) {
-//         userDir = path.join('.', 'data-access', 'uploads', 'users', userId);
-//     } else {
-//         userDir = path.join(
-//             '.',
-//             'data-access',
-//             'uploads',
-//             'chats',
-//             chatId,
-//             userId
-//         );
-//     }
-//     fs.stat(userDir, async (error) => {
-//         if (error) {
-//             fs.mkdirSync(userDir, { recursive: true });
-//             callback(userDir);
-//             return;
-//         }
-//         callback(userDir);
-//     });
-// };
-
-const destination = path.join('.', 'data-access', 'uploads');
+/** Creates an upload directory if it doesn't exist. */
+const createUploadDirectory = () => {
+    const destination = path.join('.', 'data-access', 'uploads');
+    if (!fs.existsSync(destination)) {
+        fs.mkdirSync(destination);
+    }
+    return destination;
+};
 
 /** Creates a multer storage specifically for images.
  * @param {object} req - content-type must be of: 'multipart/form-data'.
@@ -42,7 +20,7 @@ const destination = path.join('.', 'data-access', 'uploads');
  */
 const storage = multer.diskStorage({
     destination(req, file, cb) {
-        cb(null, destination);
+        cb(null, createUploadDirectory());
     },
     filename(req, file, cb) {
         cb(null, `${v4() + path.extname(file.originalname)}`);
@@ -56,7 +34,7 @@ const storage = multer.diskStorage({
  */
 const fileStorage = multer.diskStorage({
     destination(req, file, cb) {
-        cb(null, destination);
+        cb(null, createUploadDirectory());
     },
     filename(req, file, cb) {
         cb(null, `${file.originalname}`);

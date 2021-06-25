@@ -104,7 +104,7 @@ const Chat = () => {
                               );
                           }
                           if (message.type === MESSAGE_TYPES.image) {
-                              const imageUri = `/${message.content}`;
+                              const imageUri = `${message.content}`;
                               return (
                                   <Styled.MessageImage
                                       key={message.id}
@@ -116,7 +116,7 @@ const Chat = () => {
                               );
                           }
                           if (message.type === MESSAGE_TYPES.file) {
-                              const fileUri = `/${message.content}`;
+                              const fileUri = `${message.content}`;
                               const fileName = message.content.split('/').pop();
                               return (
                                   <Styled.MessageFile

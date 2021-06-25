@@ -1,6 +1,4 @@
 /** @module FileController */
-import fs from 'fs';
-import path from 'path';
 import User from '../models/User.js';
 import File from '../models/File.js';
 import { uploadImage, uploadFile } from '../data-access/storage.js';
@@ -32,22 +30,14 @@ export const postPhoto = async (req, res) => {
                 where: { id: userId },
             });
             const oldPhoto = user[photoType];
-
-            /** Delete the old photo (if exists) from the S3 bucket. */
             if (oldPhoto) {
-                const fileKey = oldPhoto.replace('/photos/', '');
+                const fileKey = oldPhoto.replace('/photo/', '');
                 await deleteS3File(fileKey);
             }
-
-            /** Upload a new photo to the S3 bucket. */
             const newUpload = await uploadS3File(req.file);
-
-            /** Remove photo from the local file system. */
             await unlinkFile(req.file.path);
-
-            /** Update the database. */
             await user.update({
-                [photoType]: `/photos/${newUpload.key}`,
+                [photoType]: `/photo/${newUpload.key}`,
             });
             res.sendStatus(200);
         } catch (err) {
@@ -67,7 +57,7 @@ export const removePhoto = async (req, res) => {
     });
     const photo = user[photoType];
     if (photo) {
-        const fileKey = photo.replace('/photos/', '');
+        const fileKey = photo.replace('/photo/', '');
         await deleteS3File(fileKey);
         await user.update({
             [photoType]: null,
@@ -80,10 +70,8 @@ export const removePhoto = async (req, res) => {
     });
 };
 
-/** Get photo - responds with a photo (profile, background) of a particular user defined by the user ID.
- * @param {uuid} userId - requires a user ID passed as URL parameter. The URL is, in fact, a URI pointing at the photo resource.
- * @param {string} photoName - requires a photo name passed as URL parameter.
- */
+/** Get photo - responds with a photo (profile, background) of a particular user
+ * defined by the user ID. */
 export const getPhoto = async (req, res) => {
     try {
         const { photoKey } = req.params;
@@ -96,9 +84,11 @@ export const getPhoto = async (req, res) => {
     }
 };
 
-/** Post file - uploads any file to a chat directory. It is meant to operate on protected routes only.
+/** Post file - uploads any chat file to the S3 bucket. It is meant to operate
+ *  on protected routes only.
  *  @param {String} chatId - requires a chat ID passed in the request body.
- *  @param {file} file - requires a file attached to the request itself (it should be done automatically by multer package).
+ *  @param {file} file - requires a file attached to the request itself (it
+ *  should be done automatically thanks to multer).
  */
 export const postFile = async (req, res) => {
     uploadFile(req, res, async (fileError) => {
@@ -113,11 +103,12 @@ export const postFile = async (req, res) => {
                 throw Error(fileError);
             }
             const { chatId } = req.body;
-
             const fileName = req.file.path.split(/[\\/]/).pop();
+            const newUpload = await uploadS3File(req.file);
+            await unlinkFile(req.file.path);
             const databaseFile = await File.create({
                 fileName,
-                uri: `${req.file.path}`,
+                uri: `/file/${newUpload.key}`,
                 ChatId: chatId,
             });
             res.send(databaseFile);
@@ -138,10 +129,10 @@ export const removeFile = async (req, res) => {
         },
     });
     if (file) {
-        fs.unlink((await file).get('uri'), async () => {
-            (await file).destroy();
-            res.sendStatus(200);
-        });
+        const fileKey = file.uri.replace('/file/', '');
+        await deleteS3File(fileKey);
+        await (await file).destroy();
+        res.sendStatus(200);
         return;
     }
     res.status(400).json({
@@ -149,25 +140,12 @@ export const removeFile = async (req, res) => {
     });
 };
 
-/** Get file - responds with a file uploaded by a particular user defined by the user ID to a particular chat defined by the chat ID.
- * @param {uuid} chatId - requires a chat ID passed as URL parameter. The URL is, in fact, a URI pointing at the file resource.
- * @param {uuid} userId - requires a chat ID passed as URL parameter.
- * @param {string} fileName - requires a file name passed as URL parameter.
- */
+/** Get file - responds with a file uploaded to the S3 bucket. */
 export const getFile = async (req, res) => {
     try {
-        const { chatId, userId, fileName } = req.params;
-        res.sendFile(
-            path.join(
-                process.env.PWD,
-                'data-access',
-                'uploads',
-                'chats',
-                chatId,
-                userId,
-                fileName
-            )
-        );
+        const { fileKey } = req.params;
+        const readStream = await getS3FileReadStream(fileKey);
+        readStream.pipe(res);
     } catch (err) {
         res.status(400).json({
             error: 'Could not find file as it does not exist.',
@@ -175,10 +153,10 @@ export const getFile = async (req, res) => {
     }
 };
 
-/** Get files - responds with data (IDs, URIs) of all files uploaded to a particular chat defined by the chat ID. It is meant to operate on protected routes only.
+/** Get chat files list - responds with data (IDs, URIs) of all files uploaded to a particular chat defined by the chat ID. It is meant to operate on protected routes only.
  * @param {uuid} chatId - requires a chat ID passed as URL parameter.
  */
-export const getFiles = async (req, res) => {
+export const getChatFilesList = async (req, res) => {
     try {
         const { chatId } = req.params;
         const files = await File.findAll({
@@ -187,7 +165,7 @@ export const getFiles = async (req, res) => {
         res.send(files);
     } catch (err) {
         res.status(400).json({
-            error: 'Could not find files. ',
+            error: 'Could not find any files.',
         });
     }
 };
