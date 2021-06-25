@@ -3,7 +3,7 @@
 ## Description
 
 Skillfinder is a social media application designed for students and teachers. It was
-created with React, Node/Express and PostgreSQL as a part of the university
+created using React, Node/Express and PostgreSQL as a part of the university
 coursework. Credits to [George](https://github.com/UP933287) for helping me out
 with this project.
 
@@ -27,18 +27,23 @@ Preview (it might take a few seconds before the server wakes up): https://skillf
 
 2. Create a .env file in the project root directory and put the following code
    inside of it:
+
     ```
     DATABASE_URL=postgres://<DATABASE_USERNAME>:<DATABASE_PASSWORD>@localhost:5432/skillfinder
     JWT_SECRET=<ANY_STRING>
+    AWS_BUCKET_NAME=<AWS_S3_BUCKET_NAME>
+    AWS_BUCKET_REGION=<AWS_S3_BUCKET_REGION>
+    AWS_ACCESS_KEY=<AWS_IAM_USER_ACCESS_KEY>
+    AWS_SECRET_KEY=<AWS_IAM_USER_SECRET_KEY>
     ```
 
-    -   Replace the <...> fragments with your local settings.
+    - Replace the <...> fragments with your local settings and the cloud credentials.
 
-    -   If you use Postgres for MacOS (Postgres.app), then you can skip setting the password.
+    - If you use Postgres for MacOS (Postgres.app), then you can skip setting the password.
 
-    -   If you use Postgres for Windows, then the default password should be set to "root".
+    - If you use Postgres for Windows, then the default password should be set to "root".
 
-    -   If you named your database different than "skillfinder", change the last bit of the connection URL as well.
+    - If you named your database different than "skillfinder", change the last bit of the connection URL as well.
 
 3. Run the setup script:
 
@@ -52,7 +57,7 @@ Preview (it might take a few seconds before the server wakes up): https://skillf
     npm start
     ```
 
-    -   You can now access the app at http://localhost:8080.
+    - You can now access the app at http://localhost:8080.
 
 ## Available Scripts
 
@@ -102,7 +107,7 @@ Preview (it might take a few seconds before the server wakes up): https://skillf
     ├── server.js        # Server instance
     ├── auth             # Auth-related files
     ├── controllers      # Controller functions
-    ├── sockets          # WebSockets-related files
+    ├── sockets          # WebSocket-related files
     ├── models           # Database models
     ├── data-access      # Data storage files
     ├── routes           # Express subrouters
