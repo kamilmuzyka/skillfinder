@@ -9,6 +9,16 @@ with this project.
 
 Preview (it might take a few seconds before the server wakes up): https://skillfinder.kamilmuzyka.com
 
+### Showcase
+
+![Search engine and user profiles preview](assets/search.gif)
+
+![Chat feature preview](assets/chat.gif)
+
+![User connections feature preview](assets/connections.gif)
+
+![User settings feature preview](assets/settings.gif)
+
 ### Prerequisites
 
 -   Node.js 16.3.0 ([Download](https://nodejs.org/en/))
