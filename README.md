@@ -9,7 +9,7 @@ with this project.
 
 Preview (it might take a few seconds before the server wakes up): https://skillfinder.kamilmuzyka.com
 
-### Showcase
+## Showcase
 
 | ![Search engine and user profiles preview](assets/search.gif) |
 | ------------------------------------------------------------- |
@@ -23,7 +23,7 @@ Preview (it might take a few seconds before the server wakes up): https://skillf
 | ![User settings feature preview](assets/settings.gif) |
 | ----------------------------------------------------- |
 
-### Prerequisites
+## Prerequisites
 
 -   Node.js 16.3.0 ([Download](https://nodejs.org/en/))
 
@@ -31,7 +31,7 @@ Preview (it might take a few seconds before the server wakes up): https://skillf
 
 -   PostgreSQL 13.3 ([Download/Windows](https://www.postgresql.org/download/) | [Download/MacOS](https://postgresapp.com/))
 
-### Installation
+## Installation
 
 1. Run the installation script:
 
