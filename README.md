@@ -4,10 +4,7 @@
 
 Skillfinder is a social media application designed for students and teachers. It was
 created using React, Node/Express and PostgreSQL as a part of the university
-coursework. Credits to [George](https://github.com/UP933287) for helping me out
-with this project.
-
-Preview (it might take a few seconds before the server wakes up): https://skillfinder.kamilmuzyka.com
+coursework.
 
 ## Showcase
 
